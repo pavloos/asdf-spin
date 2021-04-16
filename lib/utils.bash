@@ -22,12 +22,13 @@ list_all_versions() {
   # newest version must be listed last
   # sometimes new release is not published so get the latest published and remove remove differences
   latest_published=$(curl -s https://storage.googleapis.com/spinnaker-artifacts/spin/latest)
-  releases=$(curl "${gh_curl_opts[@]}" https://api.github.com/repos/spinnaker/spin/tags \
-    | grep 'name.*version-' \
-    | grep -o '[0-9]*\.[0-9]*\.[0-9]*' \
-    | awk "/$latest_published/{p=1}p" \
+  releases=$(
+    curl "${gh_curl_opts[@]}" https://api.github.com/repos/spinnaker/spin/tags |
+      grep 'name.*version-' |
+      grep -o '[0-9]*\.[0-9]*\.[0-9]*' |
+      awk "/$latest_published/{p=1}p"
   )
-  echo $releases | awk "/$latest_published/{p=1}p" | $TAC_COMMAND
+  echo "$releases" | awk "/$latest_published/{p=1}p" | $TAC_COMMAND
 }
 
 download_release() {

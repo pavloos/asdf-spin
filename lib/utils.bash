@@ -23,16 +23,15 @@ sort_versions() {
     LC_ALL=C sort -t. -k 1,1 -k 2,2n -k 3,3n -k 4,4n -k 5,5n | awk '{print $2}'
 }
 
-list_all_versions ()
-{
-    latest_published=$(curl -s https://storage.googleapis.com/spinnaker-artifacts/spin/latest);
-    releases=$(
+list_all_versions() {
+  latest_published=$(curl -s https://storage.googleapis.com/spinnaker-artifacts/spin/latest)
+  releases=$(
     curl "${gh_curl_opts[@]}" https://api.github.com/repos/spinnaker/spin/tags |
       grep -E '"name": "(version-|v)[0-9.]+"' |
       grep -o '[0-9]*\.[0-9]*\.[0-9]*' | sort_versions | uniq
-  );
-    # print all version up to $latest_published inclusive
-    echo "$releases" | awk "NR==1,/$latest_published/"
+  )
+  # print all version up to $latest_published inclusive
+  echo "$releases" | awk "NR==1,/$latest_published/"
 }
 
 download_release() {
